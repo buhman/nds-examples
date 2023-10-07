@@ -19,6 +19,9 @@ SECTIONS
   .text.arm9 ALIGN(4) : SUBALIGN(4)
   {
     KEEP(*(.text.9start))
+    KEEP(*(.text.startup.*))
+    KEEP(*(.text.*))
+    KEEP(*(.text))
   } > ram AT> rom
 
   .text.arm7 ALIGN(4) : SUBALIGN(4)
