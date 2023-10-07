@@ -12,5 +12,5 @@ void main()
   uint16_t color = (7 << 10) | (31 << 5) | (31 << 0);
   pram[0] = color;
 
-  while (1);
+  while (1) { asm volatile ("nop"); };
 }

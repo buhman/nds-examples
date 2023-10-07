@@ -10,9 +10,11 @@
 	ldr r1, =#((7 << 10) | (10 << 5) | (19 << 0))
 	strh r1, [r0, #0x000]
 
+	ldr r0, =#(0x027E0000 + 0x400 - 4)
+	mov sp, r0
+
 start9:
-	// jump to main
-        b main
+        b start
 
 	.section .text.7start
 start7:
