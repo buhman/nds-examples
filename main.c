@@ -8,6 +8,7 @@
 #define DISPCNT 0x000
 
 #define DB_DISPCNT 0x1000
+#define DB_DISPCNT__DISPLAY__ON (0b1 << 16)
 
 #define VRAMCNT 0x240
 
@@ -30,8 +31,6 @@ void main()
 
   bg_pram_a[0] = (31 << 10) | (0 << 5) | (31 << 0);
   bg_pram_a[1] = (31 << 10) | (0 << 5) | (3 << 0);
-
-  bg_pram_b[0] = (31 << 10) | (14 << 5) | (14 << 0);
 
   io_reg32[DISPCNT / 4] = DISPCNT__DISPLAY__GRAPHICS
                         | DISPCNT__BG1
@@ -58,10 +57,9 @@ void main()
   }
 
   // screen
-  //volatile uint16_t * screen_base_block = (volatile uint16_t *)(bg_vram_a + (31 * 0x800));
   // show character number 1 at the top-left corner
-
-  *((volatile uint16_t *)0x0600f800) = 1;
+  volatile uint16_t * screen = (volatile uint16_t *)&bg_vram_a[31 * 0x800 / 4];
+  screen[0] = 1;
 
   while (1) {};
 }
