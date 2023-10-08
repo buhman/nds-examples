@@ -9,6 +9,8 @@
 
 #define DB_DISPCNT 0x1000
 
+#define VRAMCNT 0x240
+
 #define BGxCNT__COLOR_MODE__16 (0b0 << 7)
 #define BGxCNT__SCREEN_SIZE__256x256 (0b00 << 14)
 #define BGxCNT__SCREEN_BASE_BLOCK(n) (((n) & 0b11111) << 8)
@@ -40,11 +42,19 @@ void main()
                        | BGxCNT__COLOR_MODE__16
                        | BGxCNT__CHARACTER_BASE_BLOCK(0);
 
+  // VRAM-A:
+  // - OFS: 00
+  // - MST: 01
+  // - E  :  1
+  io_reg32[VRAMCNT / 4] = (1 << 7) | (0b01 << 0);
+
   // define character number 1 in character base block 0
   uint32_t character_size = 8 * 8 / 2; // in bytes (8x8 @ 4bpp)
-  volatile uint32_t * character = &bg_vram_a[character_size];
-  for (int i = 0; i < (character_size / 4); i++) {
-    character[i] = (1 << 4) | (1 << 0); // set color index 1, two pixels at a time
+  volatile uint32_t * character = &bg_vram_a[character_size / 4];
+  for (int i = 0; i < (character_size / 4) * 2; i++) {
+    // set color index 1, 8 pixels at a time
+    character[i] = (1 << 28) | (1 << 24) | (1 << 20) | (1 << 16)
+                 | (1 << 12) | (1 << 8)  | (1 << 4)  | (1 << 0);
   }
 
   // screen
